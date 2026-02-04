@@ -19,6 +19,8 @@ class PathFind {
 	public:
 		PathFind(int row, int col); //constructor to take in rows and columns parameters
 		void printGrid();	 //function to print the grid
+		void setObstacle(int row, int col); //function to set obstacles in the grid
+
 	private:
 		std::vector<std::vector<int>> grid; //2D vector to represent the grid 
 		int numRows;
