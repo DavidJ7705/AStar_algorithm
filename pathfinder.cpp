@@ -63,3 +63,65 @@ void PathFind::setGoal(int row, int col) {	//function to set the end point in th
 		std::cout << "Error: Goal Out of bounds" << std::endl;
 	}
 }
+
+int PathFind::manhattanDistance(Point p1, Point p2) {
+	return std::abs(p1.row - p2.row) + std::abs(p1.col - p2.col);
+}
+
+void PathFind::findPath() {
+	std::vector<Node> openList; // List of nodes to be evaluated
+
+	std::vector<std::vector<int>> closedList;
+	closedList.resize(numRows, std::vector<int>(numCols, 0)); // List of nodes already evaluated
+
+	// Initialize the start node and add it to the open list
+	Node startNode(startRow, startCol);
+	startNode.h = manhattanDistance(startNode.point, { goalRow, goalCol });
+	startNode.f = startNode.g + startNode.h;
+	openList.push_back(startNode);
+
+	// direction arrays for up, down, left, right
+	int rowDir[] = { -1, 1, 0, 0 };
+	int colDir[] = { 0, 0, -1, 1 };
+
+	while (!openList.empty()) {
+
+		// find the node with the lowest f cost in the open list
+		int lowestF = 0;
+		for (int i = 1; i < openList.size(); i++) {
+			if (openList[i].f < openList[lowestF].f) {
+				lowestF = i;
+			}
+		}
+
+		Node current = openList[lowestF];
+		openList.erase(openList.begin() + lowestF); // remove from open list
+		closedList[current.point.row][current.point.col] = 1; // mark as visited
+
+		// check if we reached the goal
+		if (current.point.row == goalRow && current.point.col == goalCol) {
+			std::cout << "Path found!" << std::endl;
+			std::cout << "Total path cost (g): " << current.g << std::endl;
+			return;
+		}
+
+		// explore neighbours
+		for (int i = 0; i < 4; i++) {
+			int newRow = current.point.row + rowDir[i];
+			int newCol = current.point.col + colDir[i];
+
+			// skip if out of bounds, obstacle, or already visited
+			if (newRow < 0 || newRow >= numRows || newCol < 0 || newCol >= numCols) continue;
+			if (grid[newRow][newCol] == 1) continue;
+			if (closedList[newRow][newCol] == 1) continue;
+
+			Node neighbour(newRow, newCol);
+			neighbour.g = current.g + 1;
+			neighbour.h = manhattanDistance(neighbour.point, { goalRow, goalCol });
+			neighbour.f = neighbour.g + neighbour.h;
+			openList.push_back(neighbour);
+		}
+	}
+	std::cout << "No path found!" << std::endl;
+
+}
