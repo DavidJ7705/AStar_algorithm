@@ -25,12 +25,24 @@ int main() {
 	std::cout << "Grid after setting obstacle:" << std::endl;
 
 	pf.setObstacle(1, 0);
-	pf.setObstacle(2, 3);
-	pf.setObstacle(3, 0);
-
-
+	pf.setObstacle(1, 1);
+	pf.setObstacle(1, 2);
+	pf.setObstacle(1, 3);
+	pf.setObstacle(1, 4);
+	pf.setObstacle(3, 1);
+	pf.setObstacle(3, 2);
+	pf.setObstacle(3, 3);
+	pf.setObstacle(3, 4);
+	pf.setObstacle(3, 5);
+	pf.setObstacle(5, 0);
+	pf.setObstacle(5, 1);
+	pf.setObstacle(5, 2);
+	pf.setObstacle(5, 3);
+	pf.setObstacle(5, 4);
 
 	pf.printGrid();
+
+	pf.findPath(); // finding the path from start to goal using A* algorithm
 
 	return 0;
 }

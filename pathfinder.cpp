@@ -63,3 +63,94 @@ void PathFind::setGoal(int row, int col) {	//function to set the end point in th
 		std::cout << "Error: Goal Out of bounds" << std::endl;
 	}
 }
+
+int PathFind::manhattanDistance(Point p1, Point p2) {
+	return std::abs(p1.row - p2.row) + std::abs(p1.col - p2.col);
+}
+
+void PathFind::printPathGrid() {
+	std::cout << "\nPath Grid:" << std::endl;
+	for (int r = 0; r < numRows; r++) {
+		for (int c = 0; c < numCols; c++) {
+			if (r == startRow && c == startCol) {
+				std::cout << "S ";
+			}
+			else if (r == goalRow && c == goalCol) {
+				std::cout << "G ";
+			}
+			else if (grid[r][c] == 1) {
+				std::cout << "# ";
+			}
+			else if (grid[r][c] == 2) {
+				std::cout << "* ";
+			}
+			else {
+				std::cout << ". ";
+			}
+		}
+		std::cout << std::endl;
+	}
+}
+
+void PathFind::findPath() {
+	std::vector<Node*> openList;
+	std::vector<std::vector<int>> closedList;
+	closedList.resize(numRows, std::vector<int>(numCols, 0));
+
+	Node* startNode = new Node(startRow, startCol);
+	startNode->h = manhattanDistance(startNode->point, { goalRow, goalCol });
+	startNode->f = startNode->g + startNode->h;
+	openList.push_back(startNode);
+
+	int rowDir[] = { -1, 1, 0, 0 };
+	int colDir[] = { 0, 0, -1, 1 };
+
+	while (!openList.empty()) {
+		// find lowest f cost node
+		int lowestF = 0;
+		for (int i = 1; i < openList.size(); i++) {
+			if (openList[i]->f < openList[lowestF]->f) {
+				lowestF = i;
+			}
+		}
+
+		Node* current = openList[lowestF];
+		openList.erase(openList.begin() + lowestF);
+		closedList[current->point.row][current->point.col] = 1;
+
+		// goal reached
+		if (current->point.row == goalRow && current->point.col == goalCol) {
+			std::cout << "Path found! Total steps: " << current->g << std::endl;
+
+			// mark path on grid
+			Node* trace = current;
+			while (trace != nullptr) {
+				if (!(trace->point.row == startRow && trace->point.col == startCol) &&
+					!(trace->point.row == goalRow && trace->point.col == goalCol)) {
+					grid[trace->point.row][trace->point.col] = 2; // mark as path
+				}
+				trace = trace->parent;
+			}
+			printPathGrid();
+			return;
+		}
+
+		// explore neighbours
+		for (int i = 0; i < 4; i++) {
+			int newRow = current->point.row + rowDir[i];
+			int newCol = current->point.col + colDir[i];
+
+			if (newRow < 0 || newRow >= numRows || newCol < 0 || newCol >= numCols) continue;
+			if (grid[newRow][newCol] == 1) continue;
+			if (closedList[newRow][newCol] == 1) continue;
+
+			Node* neighbour = new Node(newRow, newCol);
+			neighbour->g = current->g + 1;
+			neighbour->h = manhattanDistance(neighbour->point, { goalRow, goalCol });
+			neighbour->f = neighbour->g + neighbour->h;
+			neighbour->parent = current; // track parent!
+			openList.push_back(neighbour);
+		}
+	}
+	std::cout << "No path found!" << std::endl;
+}
