@@ -15,6 +15,7 @@ G00419108
 
 #include <vector> // vector
 #include <memory> // for smart pointers
+#include <queue> // for priority queue
 
 struct Point {
 	int row;
@@ -29,6 +30,12 @@ struct Node {
 	std::shared_ptr<Node> parent; // Pointer to parent node for path reconstruction
 	Node(int r, int c):g(0), h(0), f(0), parent(nullptr) {
 		point = { r, c };
+	}
+};
+
+struct CompareNode {
+	bool operator()(const std::shared_ptr<Node>& a, const std::shared_ptr<Node>& b) {
+		return a->f > b->f; // higher f cost has lower priority
 	}
 };
 
