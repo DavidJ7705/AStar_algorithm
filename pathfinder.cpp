@@ -93,29 +93,24 @@ void PathFind::printPathGrid() {
 }
 
 void PathFind::findPath() {
-	std::vector<std::shared_ptr<Node>> openList;
+	std::priority_queue<std::shared_ptr<Node>, std::vector<std::shared_ptr<Node>>, CompareNode> openList;
 	std::vector<std::vector<int>> closedList;
 	closedList.resize(numRows, std::vector<int>(numCols, 0));
 
 	auto startNode = std::make_shared<Node>(startRow, startCol);
 	startNode->h = manhattanDistance(startNode->point, { goalRow, goalCol });
 	startNode->f = startNode->g + startNode->h;
-	openList.push_back(startNode);
+	openList.push(startNode);
 
 	int rowDir[] = { -1, 1, 0, 0 };
 	int colDir[] = { 0, 0, -1, 1 };
 
 	while (!openList.empty()) {
-		// find lowest f cost node
-		int lowestF = 0;
-		for (int i = 1; i < openList.size(); i++) {
-			if (openList[i]->f < openList[lowestF]->f) {
-				lowestF = i;
-			}
-		}
+		// find lowest f cost node, priority queue handles ordering automatically
+		auto current = openList.top();
+		openList.pop();
 
-		auto current = openList[lowestF];
-		openList.erase(openList.begin() + lowestF);
+
 		closedList[current->point.row][current->point.col] = 1;
 
 		// goal reached
@@ -149,7 +144,7 @@ void PathFind::findPath() {
 			neighbour->h = manhattanDistance(neighbour->point, { goalRow, goalCol });
 			neighbour->f = neighbour->g + neighbour->h;
 			neighbour->parent = current; // track parent!
-			openList.push_back(neighbour);
+			openList.push(neighbour);
 		}
 	}
 	std::cout << "No path found!" << std::endl;
