@@ -93,11 +93,11 @@ void PathFind::printPathGrid() {
 }
 
 void PathFind::findPath() {
-	std::vector<Node*> openList;
+	std::vector<std::shared_ptr<Node>> openList;
 	std::vector<std::vector<int>> closedList;
 	closedList.resize(numRows, std::vector<int>(numCols, 0));
 
-	Node* startNode = new Node(startRow, startCol);
+	auto startNode = std::make_shared<Node>(startRow, startCol);
 	startNode->h = manhattanDistance(startNode->point, { goalRow, goalCol });
 	startNode->f = startNode->g + startNode->h;
 	openList.push_back(startNode);
@@ -114,7 +114,7 @@ void PathFind::findPath() {
 			}
 		}
 
-		Node* current = openList[lowestF];
+		auto current = openList[lowestF];
 		openList.erase(openList.begin() + lowestF);
 		closedList[current->point.row][current->point.col] = 1;
 
@@ -123,7 +123,7 @@ void PathFind::findPath() {
 			std::cout << "Path found! Total steps: " << current->g << std::endl;
 
 			// mark path on grid
-			Node* trace = current;
+			auto trace = current;
 			while (trace != nullptr) {
 				if (!(trace->point.row == startRow && trace->point.col == startCol) &&
 					!(trace->point.row == goalRow && trace->point.col == goalCol)) {
@@ -144,7 +144,7 @@ void PathFind::findPath() {
 			if (grid[newRow][newCol] == 1) continue;
 			if (closedList[newRow][newCol] == 1) continue;
 
-			Node* neighbour = new Node(newRow, newCol);
+			auto neighbour = std::make_shared<Node>(newRow, newCol);
 			neighbour->g = current->g + 1;
 			neighbour->h = manhattanDistance(neighbour->point, { goalRow, goalCol });
 			neighbour->f = neighbour->g + neighbour->h;

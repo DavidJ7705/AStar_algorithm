@@ -14,6 +14,7 @@ G00419108
 #define PATH_FIND_H
 
 #include <vector> // vector
+#include <memory> // for smart pointers
 
 struct Point {
 	int row;
@@ -25,7 +26,7 @@ struct Node {
 	int h; // Heuristic cost from current node to goal
 	int f; // Total cost (g + h)
 
-	Node* parent; // Pointer to parent node for path reconstruction
+	std::shared_ptr<Node> parent; // Pointer to parent node for path reconstruction
 	Node(int r, int c):g(0), h(0), f(0), parent(nullptr) {
 		point = { r, c };
 	}
