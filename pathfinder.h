@@ -39,6 +39,8 @@ class PathFind {
 		void setStart(int row, int col); //function to set the start point in the grid
 		void setGoal(int row, int col); //function to set the end point in the grid
 		void findPath(); //function to find the path from start to goal using A* algorithm
+		void printPathGrid();
+ 
 
 	private:
 		std::vector<std::vector<int>> grid; //2D vector to represent the grid 
@@ -47,6 +49,7 @@ class PathFind {
 		int startRow, startCol;
 		int goalRow, goalCol;
 		int manhattanDistance(Point p1, Point p2);
+
 
 };
 
