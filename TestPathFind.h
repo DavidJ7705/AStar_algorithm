@@ -16,5 +16,6 @@ void TestNormalPath();
 void TestPathNoObstacles();
 void TestStartSameGoal();
 void TestNoPath();
+void TestHeuristicComparison();
 
 #endif

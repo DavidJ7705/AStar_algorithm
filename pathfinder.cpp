@@ -73,6 +73,13 @@ double PathFind::euclideanDistance(Point p1, Point p2) {
 	return std::sqrt((rowDiff * rowDiff) + (colDiff * colDiff));
 }
 
+
+int PathFind::chebyshevDistance(Point p1, Point p2) {
+	int rowDiff = std::abs(p1.row - p2.row);
+	int colDiff = std::abs(p1.col - p2.col);
+	return std::max(rowDiff, colDiff);
+}
+
 void PathFind::printPathGrid() {
 	std::cout << "\nPath Grid:" << std::endl;
 	for (int r = 0; r < numRows; r++) {
@@ -165,6 +172,9 @@ void PathFind::setHeuristicType(HeuristicType heuristic) {
 int PathFind::calculateHeuristic(Point p1, Point p2) {
 	if (heuristic == HeuristicType::EUCLIDEAN) {
 		return (int)euclideanDistance(p1, p2);
+	}
+	else if (heuristic == HeuristicType::CHEBYSHEV) {
+		return chebyshevDistance(p1, p2);
 	}
 	else {
 		return manhattanDistance(p1, p2);

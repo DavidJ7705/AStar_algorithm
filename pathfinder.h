@@ -42,7 +42,8 @@ struct CompareNode {
 
 enum class HeuristicType {
 	MANHATTAN,
-	EUCLIDEAN
+	EUCLIDEAN,
+	CHEBYSHEV
 };
 
 class PathFind {
@@ -67,6 +68,7 @@ class PathFind {
 		HeuristicType heuristic = HeuristicType::MANHATTAN; // default heuristic
 		int manhattanDistance(Point p1, Point p2);
 		double euclideanDistance(Point p1, Point p2);
+		int chebyshevDistance(Point p1, Point p2);
 		int calculateHeuristic(Point p1, Point p2);
 
 };
