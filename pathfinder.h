@@ -16,6 +16,7 @@ G00419108
 #include <vector> // vector
 #include <memory> // for smart pointers
 #include <queue> // for priority queue
+#include <cmath> // for sqrt and abs
 
 struct Point {
 	int row;
@@ -39,6 +40,11 @@ struct CompareNode {
 	}
 };
 
+enum class HeuristicType {
+	MANHATTAN,
+	EUCLIDEAN
+};
+
 class PathFind {
 	public:
 		PathFind(int row, int col); //constructor to take in rows and columns parameters
@@ -48,8 +54,8 @@ class PathFind {
 		void setGoal(int row, int col); //function to set the end point in the grid
 		void findPath(); //function to find the path from start to goal using A* algorithm
 		void printPathGrid();
-		void randomise(int rows, int cols, float obstacleChance = 0.3f);
-
+		void setHeuristicType(HeuristicType heuristic);
+		
  
 
 	private:
@@ -58,8 +64,10 @@ class PathFind {
 		int numCols;
 		int startRow, startCol;
 		int goalRow, goalCol;
+		HeuristicType heuristic = HeuristicType::MANHATTAN; // default heuristic
 		int manhattanDistance(Point p1, Point p2);
-
+		double euclideanDistance(Point p1, Point p2);
+		int calculateHeuristic(Point p1, Point p2);
 
 };
 
