@@ -125,9 +125,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pathfinder.cpp" />
+    <ClCompile Include="TestPathFind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pathfinder.h" />
+    <ClInclude Include="TestPathFind.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

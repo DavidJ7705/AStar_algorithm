@@ -48,6 +48,8 @@ class PathFind {
 		void setGoal(int row, int col); //function to set the end point in the grid
 		void findPath(); //function to find the path from start to goal using A* algorithm
 		void printPathGrid();
+		void randomise(int rows, int cols, float obstacleChance = 0.3f);
+
  
 
 	private:
