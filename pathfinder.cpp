@@ -107,8 +107,7 @@ void PathFind::findPath() {
 	startNode->f = startNode->g + startNode->h;
 	openList.push(startNode);
 
-	int rowDir[] = { -1, 1, 0, 0 };
-	int colDir[] = { 0, 0, -1, 1 };
+	std::vector<std::pair<int, int>> directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} }; // up, down, left, right directions
 
 	while (!openList.empty()) {
 		// find lowest f cost node, priority queue handles ordering automatically
@@ -137,9 +136,9 @@ void PathFind::findPath() {
 		}
 
 		// explore neighbours
-		for (int i = 0; i < 4; i++) {
-			int newRow = current->point.row + rowDir[i];
-			int newCol = current->point.col + colDir[i];
+		for (auto& direction : directions) {
+			int newRow = current->point.row + direction.first;
+			int newCol = current->point.col + direction.second;
 
 			if (newRow < 0 || newRow >= numRows || newCol < 0 || newCol >= numCols) continue;
 			if (grid[newRow][newCol] == 1) continue;
