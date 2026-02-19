@@ -12,9 +12,10 @@ G00419108
 
 void RunTests(int argc, char** argv) {
     //TestNormalPath();
-	TestPathNoObstacles();
+	//TestPathNoObstacles();
 	//TestStartSameGoal();
 	//TestNoPath();
+    TestHeuristicComparison();
 }
 
 void TestNormalPath() {
@@ -67,25 +68,25 @@ void TestNormalPath() {
 
 void TestPathNoObstacles() {
     std::cout << "\n***** Test No Obstacles Pathh - Manhattan *****" << std::endl;
-    PathFind pf(4, 4);
+    PathFind pf(10, 10);
     pf.setStart(0, 0);
-    pf.setGoal(3, 3);
+    pf.setGoal(9, 9);
     pf.printGrid();
     pf.setHeuristicType(HeuristicType::MANHATTAN);
     pf.findPath();
 
     std::cout << "\n***** Test No Obstacles Path - Euclidean *****" << std::endl;
-    PathFind pf2(4, 4);
+    PathFind pf2(10, 10);
     pf2.setStart(0, 0);
-    pf2.setGoal(3, 3);
+    pf2.setGoal(9, 9);
     pf2.printGrid();
     pf2.setHeuristicType(HeuristicType::EUCLIDEAN);
     pf2.findPath();
 
     std::cout << "\n***** Test No Obstacles Path - Chebyshev *****" << std::endl;
-    PathFind pf3(4, 4);
+    PathFind pf3(10, 10);
     pf3.setStart(0, 0);
-    pf3.setGoal(3, 3);
+    pf3.setGoal(9, 9);
     pf3.printGrid();
     pf3.setHeuristicType(HeuristicType::CHEBYSHEV);
     pf3.findPath();
@@ -110,4 +111,32 @@ void TestNoPath() {
 	pf.setObstacle(1, 1);
 	pf.printGrid();
 	pf.findPath(); 
+}
+
+
+void TestHeuristicComparison() {
+    std::cout << "\n***** Heuristic Comparison *****" << std::endl;
+
+    auto runWithHeuristic = [](HeuristicType type, std::string name) {
+        PathFind pf(6, 6);
+        pf.setStart(0, 0);
+        pf.setGoal(5, 5);
+        pf.setObstacle(1, 0);
+        pf.setObstacle(1, 4);
+        pf.setObstacle(3, 1);
+        pf.setObstacle(3, 2);
+        pf.setObstacle(3, 4);
+        pf.setObstacle(3, 5);
+        pf.setObstacle(5, 0);
+        pf.setObstacle(5, 2);
+        pf.setObstacle(5, 3);
+        pf.setHeuristicType(type);
+        std::cout << "\n--- " << name << " ---" << std::endl;
+        //pf.printGrid();
+        pf.findPath();
+        };
+
+    runWithHeuristic(HeuristicType::MANHATTAN, "Manhattan");
+    runWithHeuristic(HeuristicType::EUCLIDEAN, "Euclidean");
+    runWithHeuristic(HeuristicType::CHEBYSHEV, "Chebyshev");
 }
