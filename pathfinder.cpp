@@ -4,7 +4,6 @@
 
 David Jayakumar
 G00419108
-04/02/2026
 */
 
 #include <iostream>
