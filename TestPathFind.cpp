@@ -4,6 +4,7 @@
 
 void RunTests(int argc, char** argv) {
     TestNormalPath();
+	testPathNoObstacles();
 	TestNoPath();
 }
 
@@ -31,14 +32,24 @@ void TestNormalPath() {
 	pf.findPath(); // finding the path from start to goal using A* algorithm
 }
 
+void testPathNoObstacles() {
+	std::cout << "\n\n***** Test No Obstacles Path *****" << std::endl;
+	PathFind pf(4, 4);
+	pf.setStart(0, 0);
+	pf.setGoal(3, 3);
+	pf.printGrid();
+	pf.findPath();
+}
+
+
 void TestNoPath() {
 	std::cout << "\n\n***** Test No Path *****" << std::endl;
-	PathFind pf(4, 4); // creating an object of PathFind class with x rows and y columns
-	pf.setStart(0, 0); // setting the start point at (0, 0)
-	pf.setGoal(3, 3); // setting the goal point at (5, 5)
+	PathFind pf(4, 4); 
+	pf.setStart(0, 0); 
+	pf.setGoal(3, 3); 
 	pf.setObstacle(1, 0);
 	pf.setObstacle(0, 1);
 	pf.setObstacle(1, 1);
 	pf.printGrid();
-	pf.findPath(); // finding the path from start to goal using A* algorithm
+	pf.findPath(); 
 }
