@@ -115,7 +115,6 @@ void PathFind::findPath() {
 
 		// goal reached
 		if (current->point.row == goalRow && current->point.col == goalCol) {
-			std::cout << "Path found! Total steps: " << current->g << std::endl;
 
 			// mark path on grid
 			auto trace = current;
@@ -127,6 +126,8 @@ void PathFind::findPath() {
 				trace = trace->parent;
 			}
 			printPathGrid();
+			std::cout << "Path found! Total steps: " << current->g << std::endl;
+
 			return;
 		}
 
@@ -146,6 +147,9 @@ void PathFind::findPath() {
 			neighbour->parent = current; // track parent!
 			openList.push(neighbour);
 		}
+
+
+
 	}
 	std::cout << "No path found!" << std::endl;
 }
