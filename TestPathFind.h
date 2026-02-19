@@ -5,5 +5,6 @@
 
 void RunTests(int argc, char** argv);
 void TestNormalPath();
+void TestNoPath();
 
 #endif
