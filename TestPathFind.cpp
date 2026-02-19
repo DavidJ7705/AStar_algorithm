@@ -1,10 +1,19 @@
+﻿/*
+
+ᯓ▶︎ •၊၊||၊|။||||။‌‌‌‌‌၊|• 0:10
+
+David Jayakumar
+G00419108
+*/
+
 #include <iostream>
 #include "pathfinder.h"
 #include "TestPathFind.h"
 
 void RunTests(int argc, char** argv) {
     TestNormalPath();
-	testPathNoObstacles();
+	TestPathNoObstacles();
+	TestStartSameGoal();
 	TestNoPath();
 }
 
@@ -32,7 +41,7 @@ void TestNormalPath() {
 	pf.findPath(); // finding the path from start to goal using A* algorithm
 }
 
-void testPathNoObstacles() {
+void TestPathNoObstacles() {
 	std::cout << "\n\n***** Test No Obstacles Path *****" << std::endl;
 	PathFind pf(4, 4);
 	pf.setStart(0, 0);
@@ -41,6 +50,14 @@ void testPathNoObstacles() {
 	pf.findPath();
 }
 
+void TestStartSameGoal() {
+	std::cout << "\n\n***** Test Start Same Goal *****" << std::endl;
+	PathFind pf(4, 4);
+	pf.setStart(2, 2);
+	pf.setGoal(2, 2);
+	pf.printGrid();
+	pf.findPath();
+}
 
 void TestNoPath() {
 	std::cout << "\n\n***** Test No Path *****" << std::endl;
