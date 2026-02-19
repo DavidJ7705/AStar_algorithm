@@ -67,6 +67,12 @@ int PathFind::manhattanDistance(Point p1, Point p2) {
 	return std::abs(p1.row - p2.row) + std::abs(p1.col - p2.col);
 }
 
+double PathFind::euclideanDistance(Point p1, Point p2) {
+	int rowDiff = p1.row - p2.row;
+	int colDiff = p1.col - p2.col;
+	return std::sqrt((rowDiff * rowDiff) + (colDiff * colDiff));
+}
+
 void PathFind::printPathGrid() {
 	std::cout << "\nPath Grid:" << std::endl;
 	for (int r = 0; r < numRows; r++) {
@@ -97,7 +103,7 @@ void PathFind::findPath() {
 	closedList.resize(numRows, std::vector<int>(numCols, 0));
 
 	auto startNode = std::make_shared<Node>(startRow, startCol);
-	startNode->h = manhattanDistance(startNode->point, { goalRow, goalCol });
+	startNode->h = calculateHeuristic(startNode->point, { goalRow, goalCol });
 	startNode->f = startNode->g + startNode->h;
 	openList.push(startNode);
 
@@ -141,7 +147,7 @@ void PathFind::findPath() {
 
 			auto neighbour = std::make_shared<Node>(newRow, newCol);
 			neighbour->g = current->g + 1;
-			neighbour->h = manhattanDistance(neighbour->point, { goalRow, goalCol });
+			neighbour->h = calculateHeuristic(neighbour->point, { goalRow, goalCol });
 			neighbour->f = neighbour->g + neighbour->h;
 			neighbour->parent = current; // track parent!
 			openList.push(neighbour);
@@ -151,4 +157,17 @@ void PathFind::findPath() {
 
 	}
 	std::cout << "No path found!" << std::endl;
+}
+
+void PathFind::setHeuristicType(HeuristicType heuristic) {
+	this->heuristic = heuristic;
+}
+
+int PathFind::calculateHeuristic(Point p1, Point p2) {
+	if (heuristic == HeuristicType::EUCLIDEAN) {
+		return (int)euclideanDistance(p1, p2);
+	}
+	else {
+		return manhattanDistance(p1, p2);
+	}
 }
