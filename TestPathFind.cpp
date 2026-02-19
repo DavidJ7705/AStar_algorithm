@@ -81,6 +81,14 @@ void TestPathNoObstacles() {
     pf2.printGrid();
     pf2.setHeuristicType(HeuristicType::EUCLIDEAN);
     pf2.findPath();
+
+    std::cout << "\n***** Test No Obstacles Path - Chebyshev *****" << std::endl;
+    PathFind pf3(4, 4);
+    pf3.setStart(0, 0);
+    pf3.setGoal(3, 3);
+    pf3.printGrid();
+    pf3.setHeuristicType(HeuristicType::CHEBYSHEV);
+    pf3.findPath();
 }
 
 void TestStartSameGoal() {
