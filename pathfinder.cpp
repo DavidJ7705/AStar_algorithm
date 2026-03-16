@@ -8,12 +8,14 @@ G00419108
 
 #include <iostream>
 #include "pathfinder.h"
+#include "heuristics.h"
+#include "types.h"
 
 PathFind::PathFind(int row, int col) : numRows_(row), numCols_(col) { // constructor to initialize rows and columns
-	grid.resize(numRows_, std::vector<int>(numCols_, 0)); //initialised to 0, creating a grid of given rows and columns
+	grid_.resize(numRows_, std::vector<int>(numCols_, 0)); //initialised to 0, creating a grid_ of given rows and columns
 }
 
-void PathFind::printGrid() {	//function to print the grid
+void PathFind::printGrid() {	//function to print the grid_
 	for (int r = 0; r < numRows_; r++) {
 		for (int c = 0; c < numCols_; c++) {
 			if (r == startRow_ && c == startCol_) {
@@ -22,7 +24,7 @@ void PathFind::printGrid() {	//function to print the grid
 			else if (r == goalRow_ && c == goalCol_) {
 				std::cout << "G "; //printing G for goal
 			}
-			else if (grid[r][c] == 0) {
+			else if (grid_[r][c] == 0) {
 				std::cout << ". "; //printing . for empty cell
 			}
 			else {
@@ -34,50 +36,33 @@ void PathFind::printGrid() {	//function to print the grid
 }
 
 
-void PathFind::setObstacle(int row, int col) {	//function to set obstacles in the grid
+void PathFind::setObstacle(int row, int col) {	//function to set obstacles in the grid_
 	if (row >= 0 && row < numRows_ && col >= 0 && col < numCols_) { //checking if the row and column are within bounds
-		grid[row][col] = 1; //setting the obstacle at specified position
+		grid_[row][col] = 1; //setting the obstacle at specified position
 	}
 	else {
-		std::cout << "Error: Out of bounds" << std::endl;
+		throw std::out_of_range("setObstacle: row out of bounds"); //throwing an error if the position is out of bounds
 	}
 }
 
-void PathFind::setStart(int row, int col) {	//function to set the start point in the grid
+void PathFind::setStart(int row, int col) {	//function to set the start point in the grid_
 	if (row >= 0 && row < numRows_ && col >= 0 && col < numCols_) { //checking if the row and column are within bounds
 		startRow_ = row; //setting the start row
 		startCol_ = col; //setting the start column
 	}
 	else {
-		std::cout << "Error: Start Out of bounds" << std::endl;
+		throw std::out_of_range("setStart: row out of bounds"); //throwing an error if the position is out of bounds
 	}
 }
 
-void PathFind::setGoal(int row, int col) {	//function to set the end point in the grid
+void PathFind::setGoal(int row, int col) {	//function to set the end point in the grid_
 	if (row >= 0 && row < numRows_ && col >= 0 && col < numCols_) { //checking if the row and column are within bounds
 		goalRow_ = row; //setting the goal row
 		goalCol_ = col; //setting the goal column
 	}
 	else {
-		std::cout << "Error: Goal Out of bounds" << std::endl;
+		throw std::out_of_range("SetGoal: row out of bounds"); //throwing an error if the position is out of bounds
 	}
-}
-
-int PathFind::manhattanDistance(Point p1, Point p2) {
-	return std::abs(p1.row - p2.row) + std::abs(p1.col - p2.col);
-}
-
-double PathFind::euclideanDistance(Point p1, Point p2) {
-	int rowDiff = p1.row - p2.row;
-	int colDiff = p1.col - p2.col;
-	return std::sqrt((rowDiff * rowDiff) + (colDiff * colDiff));
-}
-
-
-int PathFind::chebyshevDistance(Point p1, Point p2) {
-	int rowDiff = std::abs(p1.row - p2.row);
-	int colDiff = std::abs(p1.col - p2.col);
-	return std::max(rowDiff, colDiff);
 }
 
 void PathFind::printPathGrid() {
@@ -90,10 +75,10 @@ void PathFind::printPathGrid() {
 			else if (r == goalRow_ && c == goalCol_) {
 				std::cout << "G ";
 			}
-			else if (grid[r][c] == 1) {
+			else if (grid_[r][c] == 1) {
 				std::cout << "# ";
 			}
-			else if (grid[r][c] == 2) {
+			else if (grid_[r][c] == 2) {
 				std::cout << "* ";
 			}
 			else {
@@ -127,12 +112,12 @@ void PathFind::findPath() {
 		// goal reached
 		if (current->point.row == goalRow_ && current->point.col == goalCol_) {
 
-			// mark path on grid
+			// mark path on grid_
 			auto trace = current;
 			while (trace != nullptr) {
 				if (!(trace->point.row == startRow_ && trace->point.col == startCol_) &&
 					!(trace->point.row == goalRow_ && trace->point.col == goalCol_)) {
-					grid[trace->point.row][trace->point.col] = 2; // mark as path
+					grid_[trace->point.row][trace->point.col] = 2; // mark as path
 				}
 				trace = trace->parent;
 			}
@@ -148,7 +133,7 @@ void PathFind::findPath() {
 			int newCol = current->point.col + direction.second;
 
 			if (newRow < 0 || newRow >= numRows_ || newCol < 0 || newCol >= numCols_) continue;
-			if (grid[newRow][newCol] == 1) continue;
+			if (grid_[newRow][newCol] == 1) continue;
 			if (closedList[newRow][newCol] == 1) continue;
 
 			auto neighbour = std::make_shared<Node>(newRow, newCol);
@@ -170,24 +155,17 @@ void PathFind::setHeuristicType(HeuristicType heuristic_) {
 }
 
 int PathFind::calculateHeuristic(Point p1, Point p2) {
-	if (heuristic_ == HeuristicType::EUCLIDEAN) {
-		return (int)euclideanDistance(p1, p2);
-	}
-	else if (heuristic_ == HeuristicType::CHEBYSHEV) {
-		return chebyshevDistance(p1, p2);
-	}
-	else {
-		return manhattanDistance(p1, p2);
-	}
+
+	return Heuristics::calculate(heuristic_, p1, p2);
 }
 
 void PathFind::generateRandom(int obstacleDensity) {
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	// Clear the grid first
+	// Clear the grid_ first
 	for (int r = 0; r < numRows_; r++)
 		for (int c = 0; c < numCols_; c++)
-			grid[r][c] = 0;
+			grid_[r][c] = 0;
 
 	startRow_ = rand() % (numRows_ / 2);
 	startCol_ = rand() % (numCols_ / 2);
@@ -201,7 +179,7 @@ void PathFind::generateRandom(int obstacleDensity) {
 			if (r == startRow_ && c == startCol_) continue;
 			if (r == goalRow_ && c == goalCol_) continue;
 			if ((rand() % 100) < obstacleDensity) {
-				grid[r][c] = 1;
+				grid_[r][c] = 1;
 			}
 		}
 	}
