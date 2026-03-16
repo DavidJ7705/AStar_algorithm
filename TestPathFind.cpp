@@ -11,12 +11,12 @@ G00419108
 #include "TestPathFind.h"
 
 void RunTests(int argc, char** argv) {
-    //TestNormalPath();
+    TestNormalPath();
 	//TestPathNoObstacles();
 	//TestStartSameGoal();
 	//TestNoPath();
     //TestHeuristicComparison();
-    TestRandomPath();
+    //TestRandomPath();
 }
 
 void TestNormalPath() {
@@ -24,7 +24,7 @@ void TestNormalPath() {
     PathFind pf(6, 6);
     pf.setStart(0, 0);
     pf.setGoal(5, 5);
-    pf.setObstacle(1, 0);
+    pf.setObstacle(7, 7);
     pf.setObstacle(1, 1);
     pf.setObstacle(1, 2);
     pf.setObstacle(1, 3);

@@ -39,7 +39,7 @@ void PathFind::setObstacle(int row, int col) {	//function to set obstacles in th
 		grid[row][col] = 1; //setting the obstacle at specified position
 	}
 	else {
-		std::cout << "Error: Out of bounds" << std::endl;
+		throw std::out_of_range("SetObstacle: row out of bounds"); //throwing an error if the position is out of bounds
 	}
 }
 
