@@ -123,13 +123,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="heuristics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pathfinder.cpp" />
     <ClCompile Include="TestPathFind.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="heuristics.h" />
     <ClInclude Include="pathfinder.h" />
     <ClInclude Include="TestPathFind.h" />
+    <ClInclude Include="types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

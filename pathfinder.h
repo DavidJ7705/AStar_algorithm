@@ -21,10 +21,9 @@ G00419108
 #include <cstdlib>  // for rand
 #include <ctime>    // for time
 
-struct Point {
-	int row;
-	int col;
-};
+#include "heuristics.h"
+#include "types.h"
+
 struct Node {
 	Point point;
 	int g; // Cost from start to current node
@@ -43,34 +42,28 @@ struct CompareNode {
 	}
 };
 
-enum class HeuristicType {
-	MANHATTAN,
-	EUCLIDEAN,
-	CHEBYSHEV
-};
-
 class PathFind {
 	public:
 		PathFind(int row, int col); //constructor to take in rows and columns parameters
-		void printGrid();	 //function to print the grid
-		void setObstacle(int row, int col); //function to set obstacles in the grid
-		void setStart(int row, int col); //function to set the start point in the grid
-		void setGoal(int row, int col); //function to set the end point in the grid
+		void printGrid();	 //function to print the grid_
+		void setObstacle(int row, int col); //function to set obstacles in the grid_
+		void setStart(int row, int col); //function to set the start point in the grid_
+		void setGoal(int row, int col); //function to set the end point in the grid_
 		void findPath(); //function to find the path from start to goal using A* algorithm
 		void printPathGrid();
 		void setHeuristicType(HeuristicType heuristic_);
 		void generateRandom(int obstacleDensity = 30); // density = % of cells that are obstacles
 
 	private:
-		std::vector<std::vector<int>> grid; //2D vector to represent the grid 
+		std::vector<std::vector<int>> grid_; //2D vector to represent the grid_ 
 		int numRows_;
 		int numCols_;
 		int startRow_, startCol_;
 		int goalRow_, goalCol_;
 		HeuristicType heuristic_ = HeuristicType::MANHATTAN; // default heuristic_
-		int manhattanDistance(Point p1, Point p2);
-		double euclideanDistance(Point p1, Point p2);
-		int chebyshevDistance(Point p1, Point p2);
+		//int manhattanDistance(Point p1, Point p2);
+		//double euclideanDistance(Point p1, Point p2);
+		//int chebyshevDistance(Point p1, Point p2);
 		int calculateHeuristic(Point p1, Point p2);
 
 };

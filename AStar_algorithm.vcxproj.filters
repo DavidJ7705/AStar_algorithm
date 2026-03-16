@@ -24,12 +24,21 @@
     <ClCompile Include="TestPathFind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="heuristics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pathfinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestPathFind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="heuristics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
