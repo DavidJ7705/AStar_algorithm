@@ -18,6 +18,9 @@ G00419108
 #include <queue> // for priority queue
 #include <cmath> // for sqrt and abs
 
+#include <cstdlib>  // for rand
+#include <ctime>    // for time
+
 struct Point {
 	int row;
 	int col;
@@ -55,17 +58,16 @@ class PathFind {
 		void setGoal(int row, int col); //function to set the end point in the grid
 		void findPath(); //function to find the path from start to goal using A* algorithm
 		void printPathGrid();
-		void setHeuristicType(HeuristicType heuristic);
-		
- 
+		void setHeuristicType(HeuristicType heuristic_);
+		void generateRandom(int obstacleDensity = 30); // density = % of cells that are obstacles
 
 	private:
 		std::vector<std::vector<int>> grid; //2D vector to represent the grid 
-		int numRows;
-		int numCols;
-		int startRow, startCol;
-		int goalRow, goalCol;
-		HeuristicType heuristic = HeuristicType::MANHATTAN; // default heuristic
+		int numRows_;
+		int numCols_;
+		int startRow_, startCol_;
+		int goalRow_, goalCol_;
+		HeuristicType heuristic_ = HeuristicType::MANHATTAN; // default heuristic_
 		int manhattanDistance(Point p1, Point p2);
 		double euclideanDistance(Point p1, Point p2);
 		int chebyshevDistance(Point p1, Point p2);

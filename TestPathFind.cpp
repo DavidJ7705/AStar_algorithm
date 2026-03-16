@@ -15,7 +15,8 @@ void RunTests(int argc, char** argv) {
 	//TestPathNoObstacles();
 	//TestStartSameGoal();
 	//TestNoPath();
-    TestHeuristicComparison();
+    //TestHeuristicComparison();
+    TestRandomPath();
 }
 
 void TestNormalPath() {
@@ -111,6 +112,15 @@ void TestNoPath() {
 	pf.setObstacle(1, 1);
 	pf.printGrid();
 	pf.findPath(); 
+}
+
+void TestRandomPath() {
+    std::cout << "\n***** Test Random Path *****" << std::endl;
+    PathFind pf(10, 10);
+    pf.generateRandom(5); // 25% obstacle density
+    pf.printGrid();
+    pf.setHeuristicType(HeuristicType::MANHATTAN);
+    pf.findPath();
 }
 
 
