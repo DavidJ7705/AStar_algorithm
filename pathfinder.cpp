@@ -7,6 +7,10 @@ G00419108
 */
 
 #include <iostream>
+#include <algorithm>
+#include <random>
+#include <chrono>
+
 #include "pathfinder.h"
 #include "heuristics.h"
 #include "types.h"
@@ -101,6 +105,8 @@ void PathFind::findPath() {
 
 	std::vector<std::pair<int, int>> directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} }; // up, down, left, right directions
 
+	auto startTime = std::chrono::steady_clock::now(); // start timer
+
 	while (!openList.empty()) {
 		// find lowest f cost node, priority queue handles ordering automatically
 		auto current = openList.top();
@@ -112,6 +118,9 @@ void PathFind::findPath() {
 		// goal reached
 		if (current->point.row == goalRow_ && current->point.col == goalCol_) {
 
+			auto elapsed = std::chrono::duration<double, std::milli>(
+				std::chrono::steady_clock::now() - startTime
+			);
 			// mark path on grid_
 			auto trace = current;
 			while (trace != nullptr) {
@@ -123,6 +132,7 @@ void PathFind::findPath() {
 			}
 			printPathGrid();
 			std::cout << "Path found! Total steps: " << current->g << std::endl;
+			std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() << " us" << std::endl;
 
 			return;
 		}

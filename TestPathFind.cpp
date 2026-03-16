@@ -11,11 +11,11 @@ G00419108
 #include "TestPathFind.h"
 
 void RunTests(int argc, char** argv) {
-    TestNormalPath();
+    //TestNormalPath();
 	//TestPathNoObstacles();
 	//TestStartSameGoal();
 	//TestNoPath();
-    //TestHeuristicComparison();
+    TestHeuristicComparison();
     //TestRandomPath();
 }
 
