@@ -15,8 +15,8 @@ void RunTests(int argc, char** argv) {
 	//TestPathNoObstacles();
 	//TestStartSameGoal();
 	//TestNoPath();
-    //TestHeuristicComparison();
-    TestRandomPath();
+    TestHeuristicComparison();
+    //TestRandomPath();
 }
 
 void TestNormalPath() {
