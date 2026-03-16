@@ -11,12 +11,12 @@ G00419108
 #include "TestPathFind.h"
 
 void RunTests(int argc, char** argv) {
-    TestNormalPath();
+    //TestNormalPath();
 	//TestPathNoObstacles();
 	//TestStartSameGoal();
 	//TestNoPath();
     //TestHeuristicComparison();
-    //TestRandomPath();
+    TestRandomPath();
 }
 
 void TestNormalPath() {
@@ -117,7 +117,9 @@ void TestNoPath() {
 void TestRandomPath() {
     std::cout << "\n***** Test Random Path *****" << std::endl;
     PathFind pf(10, 10);
-    pf.generateRandom(5); // 25% obstacle density
+    pf.setStart(0, 0);
+    pf.setGoal(9, 9);
+    pf.generateRandom(25); //obstacle density
     pf.printGrid();
     pf.setHeuristicType(HeuristicType::MANHATTAN);
     pf.findPath();
