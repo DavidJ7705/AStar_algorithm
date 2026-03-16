@@ -20,8 +20,8 @@ PathFind::PathFind(int row, int col) : numRows_(row), numCols_(col) { // constru
 }
 
 void PathFind::printGrid() {	//function to print the grid_
-	for (int r = 0; r < numRows_; r++) {
-		for (int c = 0; c < numCols_; c++) {
+	for (int r = 0; r < numRows_; ++r) {
+		for (int c = 0; c < numCols_; ++c) {
 			if (r == startRow_ && c == startCol_) {
 				std::cout << "S "; //printing S for start
 			}
@@ -71,8 +71,8 @@ void PathFind::setGoal(int row, int col) {	//function to set the end point in th
 
 void PathFind::printPathGrid() {
 	std::cout << "\nPath Grid:" << std::endl;
-	for (int r = 0; r < numRows_; r++) {
-		for (int c = 0; c < numCols_; c++) {
+	for (int r = 0; r < numRows_; ++r) {
+		for (int c = 0; c < numCols_; ++c) {
 			if (r == startRow_ && c == startCol_) {
 				std::cout << "S ";
 			}
@@ -122,15 +122,29 @@ void PathFind::findPath() {
 				std::chrono::steady_clock::now() - startTime
 			);
 			// mark path on grid_
+			std::vector<Point> path;
 			auto trace = current;
 			while (trace != nullptr) {
+				path.push_back(trace->point);
 				if (!(trace->point.row == startRow_ && trace->point.col == startCol_) &&
 					!(trace->point.row == goalRow_ && trace->point.col == goalCol_)) {
 					grid_[trace->point.row][trace->point.col] = 2; // mark as path
 				}
 				trace = trace->parent;
 			}
+			
+			// reverse so it reads start -> goal
+			std::reverse(path.begin(), path.end());
+
+
 			printPathGrid();
+
+			// print coordinate path using operator
+			std::cout << "\nPath: ";
+			for (const auto& p : path) {
+				std::cout << p << " -> ";
+			}
+
 			std::cout << "Path found! Total steps: " << current->g << std::endl;
 			std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() << " us" << std::endl;
 
@@ -153,9 +167,6 @@ void PathFind::findPath() {
 			neighbour->parent = current; // track parent!
 			openList.push(neighbour);
 		}
-
-
-
 	}
 	std::cout << "No path found!" << std::endl;
 }
@@ -170,26 +181,21 @@ int PathFind::calculateHeuristic(Point p1, Point p2) {
 }
 
 void PathFind::generateRandom(int obstacleDensity) {
-	srand(static_cast<unsigned int>(time(nullptr)));
+	std::mt19937 rng(std::random_device{}());
+	std::uniform_int_distribution<int> chanceDist(0, 99);
 
-	// Clear the grid_ first
-	for (int r = 0; r < numRows_; r++)
-		for (int c = 0; c < numCols_; c++)
-			grid_[r][c] = 0;
+	// clear grid using iterators
+	for (auto i = grid_.begin(); i != grid_.end(); ++i) {
+		std::fill(i->begin(), i->end(), 0);
+	}
 
-	startRow_ = rand() % (numRows_ / 2);
-	startCol_ = rand() % (numCols_ / 2);
-
-	goalRow_ = numRows_ / 2 + rand() % (numRows_ / 2);
-	goalCol_ = numCols_ / 2 + rand() % (numCols_ / 2);
-
-	// Random obstacles based on density %
-	for (int r = 0; r < numRows_; r++) {
-		for (int c = 0; c < numCols_; c++) {
+	// place obstacles by routing through setObstacle
+	for (int r = 0; r < numRows_; ++r) {
+		for (int c = 0; c < numCols_; ++c) {
 			if (r == startRow_ && c == startCol_) continue;
 			if (r == goalRow_ && c == goalCol_) continue;
-			if ((rand() % 100) < obstacleDensity) {
-				grid_[r][c] = 1;
+			if (chanceDist(rng) < obstacleDensity) {
+				setObstacle(r, c);
 			}
 		}
 	}
