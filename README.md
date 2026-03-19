@@ -11,6 +11,10 @@ The goal of this project was to implement A* in modern C++ using a grid-based en
 
 The core formula driving the algorithm:
 
+
+![g h f](images/ghf_costs.png)
+
+
 ```
 f(n) = g(n) + h(n)
 ```
@@ -18,6 +22,8 @@ f(n) = g(n) + h(n)
 - `g(n)` = actual cost from the start node to node n
 - `h(n)` = heuristic estimate from node n to the goal
 - `f(n)` = total estimated cost — the value A* uses to prioritise which node to explore next
+
+
 
 ---
 
