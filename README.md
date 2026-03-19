@@ -1,4 +1,3 @@
-# A* Pathfinding Algorithm — C++
 ### David Jayakumar | G00419108 | Atlantic Technological University
 [![View Repository](https://img.shields.io/badge/GitHub-AStar_algorithm-blue?logo=github)](https://github.com/DavidJ7705/AStar_algorithm)
 
@@ -71,21 +70,7 @@ Separating `Point` from `Node` keeps the design clean — `Point` is a reusable 
 
 The algorithm maintains an open list (nodes to explore) and a closed list (visited nodes). At each step the node with the lowest f cost is selected, its neighbours are evaluated, and the process continues until the goal is reached or no path exists:
 
-```cpp
-while (!openList.empty()) {
-    auto current = openList.top(); // always lowest f cost
-    openList.pop();
-    closedList[current->point.row][current->point.col] = 1;
-
-    if (/* goal reached */) {
-        // reconstruct and print path
-    }
-
-    for (auto& direction : directions) {
-        // evaluate neighbours
-    }
-}
-```
+![search algorithm](images/search_algorithm.png)
 
 ### Path Reconstruction
 
@@ -103,19 +88,26 @@ S . . . . .
 . . . . . G
 ```
 
+
 The coordinate output uses the `friend operator<<` on `Point`, which means each coordinate prints cleanly as `(row, col)` without repeating formatting code.
 
 ### Heuristics
 
 Three distance functions are implemented in the dedicated `Heuristics` class:
 
-**Manhattan Distance** — `|row1-row2| + |col1-col2|`
+#### **Manhattan Distance:**
+![manhattan calculation](images/manhattan.png)
+
 The most accurate for 4-directional grids. Never overestimates, satisfying **admissibility** — the property that guarantees A* finds the optimal path.
 
-**Euclidean Distance** — `sqrt((row1-row2)² + (col1-col2)²)`
+#### **Euclidean Distance:**
+![manhattan calculation](images/euclidean.png)
+
 Straight-line distance. Slightly underestimates on 4-directional grids since diagonal movement is not available, but still admissible.
 
-**Chebyshev Distance** — `max(|row1-row2|, |col1-col2|)`
+#### **Chebyshev Distance:**
+![manhattan calculation](images/chebyshev.png)
+
 Designed for 8-directional movement including diagonals. Underestimates on this 4-directional grid, so it explores more nodes than necessary — but it is included for comparison and future extensibility to 8-directional movement.
 
 ---
@@ -170,9 +162,17 @@ This is the pattern from the StackUnwinding lab — throw deep, catch high. The 
 
 The original `generateRandom` function wrote directly to `grid_` internals: `grid_[r][c] = 1`. This bypassed `setObstacle` entirely, which meant the bounds checking and exception throwing added to `setObstacle` were silently skipped for every randomly placed obstacle. The fix is a single change — call `setObstacle(r, c)` instead. Now all obstacle placement in the program goes through the same validated path regardless of how it was triggered. The design is consistent with itself.
 
+
+![old random function](images/old_random_function.png)
+
+
 ### Why `std::mt19937` over `rand()`?
 
 The original random grid generation used `srand` and `rand()` — both C-style functions with known problems: `rand()` has poor statistical distribution on many platforms, and `srand(time(nullptr))` reseeds the same sequence if called within the same second. `std::mt19937` is a proper C++11 random number generator with a well-defined distribution, seeded from `std::random_device` which draws from the operating system's entropy source. This is a straightforward modern C++ replacement with no downsides.
+
+
+![new random function](images/new_random_function.png)
+
 
 ---
 
@@ -245,45 +245,28 @@ for (auto& direction : directions) {
 
 Used in `TestHeuristicComparison` to run the same grid configuration across all three heuristics without repeating the setup code:
 
-```cpp
-auto runWithHeuristic = [](HeuristicType type, std::string name) {
-    PathFind pf(6, 6);
-    // ... setup grid ...
-    pf.setHeuristicType(type);
-    pf.findPath();
-};
+![Lambda](images/lambda.png)
 
-runWithHeuristic(HeuristicType::MANHATTAN, "Manhattan");
-runWithHeuristic(HeuristicType::EUCLIDEAN, "Euclidean");
-runWithHeuristic(HeuristicType::CHEBYSHEV, "Chebyshev");
-```
 
 ### Pre-increment (`++r` / `++c`)
 
 All loop counters in the project use pre-increment (`++r`) rather than post-increment (`r++`). For primitive types like `int` this makes no performance difference, but for iterators and objects post-increment creates an unnecessary temporary copy of the previous value before incrementing. Using pre-increment consistently is the correct modern C++ habit — it communicates intent clearly (increment this, use the new value) and avoids the overhead when the type is not a primitive. Michelle's lab materials use `++i` style throughout, and applying it here keeps the codebase consistent with that convention.
 
-```cpp
 // Old — post-increment, creates a temporary for non-primitives
-for (int r = 0; r < numRows_; r++)
+
+![postincrement](images/postincrement.png)
+
 
 // New — pre-increment, no unnecessary temporary
-for (int r = 0; r < numRows_; ++r)
-```
+
+![preincrement](images/preincrement.png)
 
 ### `std::chrono` Timing
 
 Each call to `findPath()` is timed using `std::chrono::steady_clock`, with the elapsed time printed in microseconds. On small grids the differences are subtle, but the `TestHeuristicComparison` output shows Chebyshev consistently running slightly faster than Manhattan and Euclidean — because `std::max` of two integers is cheaper than Manhattan's two `abs` calls or Euclidean's `sqrt`. On larger grids this difference compounds.
 
-```cpp
-auto startTime = std::chrono::steady_clock::now();
-// ... search loop ...
-auto elapsed = std::chrono::duration<double, std::milli>(
-    std::chrono::steady_clock::now() - startTime
-);
-std::cout << "Time taken: "
-          << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count()
-          << " us" << std::endl;
-```
+![chrono timing](images/chrono_timing.png)
+
 
 ---
 
@@ -303,47 +286,26 @@ Start and goal at the same position `(2,2)`. The algorithm correctly identifies 
 ### TestNoPath
 A 4x4 grid where the start is completely surrounded by obstacles with no route to the goal. Returns `"No path found!"` correctly.
 
-### TestHeuristicComparison
-Runs all three heuristics on identical obstacle layout using a lambda. Demonstrates that all three are admissible — they all find the optimal path cost — while producing different route shapes and measurably different runtimes.
 
 ### TestRandomPath
 A 10x10 grid with manually set start `(0,0)` and goal `(9,9)`, and obstacles placed randomly via `generateRandom`. Demonstrates that random obstacle generation respects the existing start and goal positions, routes through `setObstacle` for consistent bounds checking, and uses `std::mt19937` for proper randomness.
 
 Sample output:
-```
-***** Test Random Path *****
-S . . # . . . . # .
-. . . . . . . . . .
-. . . # . . . . . .
-...
-Path Grid:
-S . . # . . . . # .
-* . . . . . . . . .
-* * . # . . . . . .
-...
-Path found! Total steps: 18
-Time taken: 312 us
-```
+
+
+
+![test random](images/test_random.png)
+
 
 ---
 
 ## Heuristic Comparison Output
 
-Running `TestHeuristicComparison` on a fixed 6x6 obstacle layout with all three heuristics:
+### TestHeuristicComparison
+Runs all three heuristics on identical obstacle layout using a lambda. Demonstrates that all three are admissible — they all find the optimal path cost — while producing different route shapes and measurably different runtimes.
 
-```
---- Manhattan ---
-Path found! Total steps: 10
-Time taken: 107 us
+![algorithm comparison](images/algorithm_comparison.png)
 
---- Euclidean ---
-Path found! Total steps: 10
-Time taken: 96 us
-
---- Chebyshev ---
-Path found! Total steps: 10
-Time taken: 89 us
-```
 
 Three observations worth noting:
 
