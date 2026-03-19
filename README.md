@@ -51,18 +51,8 @@ The `PathFind` class encapsulates the grid completely — all access goes throug
 
 A `Point` struct holds a grid coordinate (row and column). A `Node` wraps a `Point` with g, h, f costs and a parent pointer for path reconstruction:
 
-```cpp
-struct Node {
-    Point point;
-    int g; // cost from start to this node
-    int h; // heuristic cost to goal
-    int f; // total cost (g + h)
-    std::shared_ptr<Node> parent;
-    Node(int r, int c) : g(0), h(0), f(0), parent(nullptr) {
-        point = { r, c };
-    }
-};
-```
+![node struct](images/node_struct.png)
+
 
 Separating `Point` from `Node` keeps the design clean — `Point` is a reusable coordinate type used independently across `PathFind`, `Heuristics`, and the operator overload, without dragging in pathfinding-specific fields.
 
@@ -76,17 +66,7 @@ The algorithm maintains an open list (nodes to explore) and a closed list (visit
 
 Once the goal is reached, parent pointers are followed back from goal to start. Each intermediate cell is marked as `2`, the path is reversed into start-to-goal order, and printed two ways — as a coordinate sequence and as a visual grid:
 
-```
-Path: (0, 0) -> (1, 0) -> (2, 0) -> (2, 1) -> ... -> (5, 5) -> END
-
-Path Grid:
-S . . . . .
-* . . . . .
-* * . . . .
-. * * * . .
-. . . * * *
-. . . . . G
-```
+![path reconstruction](images/path_reconstruction.png)
 
 
 The coordinate output uses the `friend operator<<` on `Point`, which means each coordinate prints cleanly as `(row, col)` without repeating formatting code.
@@ -134,6 +114,10 @@ int PathFind::calculateHeuristic(Point p1, Point p2) {
     return Heuristics::calculate(heuristic_, p1, p2);
 }
 ```
+
+![manhattan calculation](images/chebyshev.png)
+
+
 
 `PathFind` no longer knows *how* distances are calculated — only *that* they are. This means the heuristic logic could be extended or changed without touching the pathfinding code at all.
 
@@ -283,8 +267,13 @@ A 10x10 open grid comparing all three heuristics. All three return 18 steps from
 ### TestStartSameGoal
 Start and goal at the same position `(2,2)`. The algorithm correctly identifies the goal immediately and returns 0 steps without entering the search loop.
 
+![same start same goal](images/same_start_same_goal.png)
+
+
 ### TestNoPath
 A 4x4 grid where the start is completely surrounded by obstacles with no route to the goal. Returns `"No path found!"` correctly.
+
+![no path](images/test_no_path.png)
 
 
 ### TestRandomPath
